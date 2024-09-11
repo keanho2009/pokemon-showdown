@@ -4215,3 +4215,53 @@ export const roomSettings: Chat.SettingsHandler = room => ({
 process.nextTick(() => {
 	Chat.multiLinePattern.register('/mafia (custom|add|overwrite)idea');
 });
+
+import { CommandContext, User, Room } from 'some-pokemon-showdown-types'; // Adjust imports based on your actual setup
+
+// Define the `revealall` command
+const revealallCommand = {
+    command: 'revealall',
+    description: 'Reveals all players\' roles in the game.',
+    async execute(context: CommandContext) {
+        const { user, room, target } = context;
+
+        // Check if the user has the appropriate permissions
+        if (!this.checkCanPerformCommand(user)) {
+            user.sendTo(room, 'You do not have permission to use this command.');
+            return;
+        }
+
+        // Ensure the game is in progress
+        if (!this.game) {
+            user.sendTo(room, 'There is no game in progress.');
+            return;
+        }
+
+        // Reveal all roles
+        for (const player of this.game.players) {
+            // Assuming `revealRole` is a method that handles role revealing
+            player.revealRole();
+        }
+
+        // Notify the room
+        room.send(`All players' roles have been revealed.`);
+    }
+};
+
+// Assuming this is how commands are registered in the game
+export class MafiaGame {
+    // Other game properties and methods...
+
+    public commands = {
+        revealall: revealallCommand.execute.bind(this),
+        // Other commands...
+    };
+
+    // Method to check if the user can perform a command
+    private checkCanPerformCommand(user: User): boolean {
+        // Define your permission check logic here
+        return user.hasPermission('admin'); // Example permission check
+    }
+
+    // Other methods related to the game...
+}
