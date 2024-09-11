@@ -4215,3 +4215,8 @@ export const roomSettings: Chat.SettingsHandler = room => ({
 process.nextTick(() => {
 	Chat.multiLinePattern.register('/mafia (custom|add|overwrite)idea');
 });
+
+public commands = {
+    revealall: revealallCommand.execute.bind(this),
+    // Other commands...
+};
